@@ -18,13 +18,20 @@ let publicPath = path.join(__dirname, "public");
 //app.use("/lib/client", express.static(path.join(__dirname, "lib/client")));
 //updater(server, publicPath);
 
+var players = [];
+
 app.use(express.static(publicPath));
 let io = socketIo(server);
 io.on("connection", (socket) => {
   let name = null;
   socket.on("join", (data) => {
     name = data.name;
-    io.emit("message", { text: name + " has joined." });
+    io.emit("message", { text: name + " has joined.\n" });
+    io.emit("message", { text: "Current players: "});
+    for (let i = 0; i < players.length; i++) {
+      io.emit("message", { text: players[i]});
+    }
+    players.push(name);
     console.log("Server Debugging: " + name + " has joined.");
   });
 
