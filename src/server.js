@@ -1,3 +1,7 @@
+// Run "node server.js" in this directory to start the server on port 5000.
+// This currently runs the server locally on the host machine, and other machines
+// on the same local network can connect.  
+
 const express = require("express");
 const http = require("http");
 const path = require("path");
@@ -21,16 +25,19 @@ io.on("connection", (socket) => {
   socket.on("join", (data) => {
     name = data.name;
     io.emit("message", { text: name + " has joined." });
+    console.log("Server Debugging: " + name + " has joined.");
   });
 
   socket.on("disconnect", () => {
     if (!name) return;
     io.emit("message", { text: name + " has left." });
+    console.log("Server Debugging: " + name + " has left.");
   });
 
   socket.on("message", (message) => {
     if (!name) return;
     io.emit("message", { name, text: message.text });
+    console.log("Server Debugging: " + name + ": " + message.text);
   });
 });
 
