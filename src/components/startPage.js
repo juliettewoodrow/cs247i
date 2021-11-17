@@ -1,16 +1,24 @@
+import { io } from "socket.io-client";
+
 const StartPage = () => {
   let name = null;
   while (!name) name = prompt("Enter your name:");
-  document.querySelector("#nameLabel").textContent = name;
-
+  let nameLabel = document.querySelector("#nameLabel")
+  if (nameLabel){
+    nameLabel.textContent = name;
+  }
+  
   let socket = io();
   socket.emit("join", { name });
-  document.querySelector("#chatform").addEventListener("submit", (event) => {
-    event.preventDefault();
-    let input = document.querySelector("#message");
-    socket.emit("message", { text: input.value });
-    input.value = "";
-  });
+  let chatform = document.querySelector("#chatform")
+  if (chatform) {
+    chatform.addEventListener("submit", (event) => {
+      event.preventDefault();
+      let input = document.querySelector("#message");
+      socket.emit("message", { text: input.value });
+      input.value = "";
+    });
+  }
 
   socket.on("message", message => {
     let elem = document.createElement("div");
@@ -22,8 +30,15 @@ const StartPage = () => {
     let text = document.createElement("span");
     text.textContent = message.text;
     elem.appendChild(text);
-    document.querySelector("#chatarea").appendChild(elem);
+    let chatarea = document.querySelector("#chatarea");
+    if (chatarea){
+      chatarea.appendChild(elem);
+    } else {
+      alert (message.text);
+    }
   });
+
+  return null;
 };
 
 export default StartPage;
